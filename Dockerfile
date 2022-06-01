@@ -13,4 +13,5 @@ RUN npm run build
 EXPOSE 3000
 EXPOSE 9200
 
-CMD ["pm2-runtime", "./dist/main.js"]
+CMD ["npm", "run", "start"]
+# CMD ["pm2-runtime", "./dist/main.js"]
