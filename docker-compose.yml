@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  api:
+    container_name: tqd-node
+    build:
+      context: .
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=local
+      - ES_HOST=elasticsearch
+      - NODE_PORT=3000
+      - ELASTIC_URL=http://elasticsearch:9200
+    volumes:
+      - .:/usr/src/app
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - esnet
+  elasticsearch:
+    container_name: tqd-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.2.2
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    logging:
+      driver: none
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - esnet
+volumes:
+  esdata:
+networks:
+  esnet:
