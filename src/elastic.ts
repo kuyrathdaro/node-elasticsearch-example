@@ -1,9 +1,22 @@
 import { Client } from "@elastic/elasticsearch";
+import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 
 const elasticUrl = process.env.ELASTIC_URL || "http://localhost:9200";
-const esclient = new Client({ node: elasticUrl });
+const elasticUsername = process.env.ELASTIC_USERNAME || "elastic";
+const elasticPassword = process.env.ELASTIC_PASSWORD as string;
+const esclient = new Client({
+    node: elasticUrl,
+    auth: {
+        username: elasticUsername,
+        password: elasticPassword
+    },
+    tls: {
+        // ca: fs.readFileSync('./ca/ca.crt'),
+        rejectUnauthorized: false
+    }
+});
 const index: string = "quotes";
 
 async function createIndex(index: any) {
