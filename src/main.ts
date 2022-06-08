@@ -15,7 +15,6 @@ dotenv.config();
             await elastic.setQuotesMapping();
             await data.populateDatabase();
         }
-
         server.start();
     }
 })();

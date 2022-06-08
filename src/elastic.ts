@@ -6,6 +6,7 @@ dotenv.config();
 const elasticUrl = process.env.ELASTIC_URL || "http://localhost:9200";
 const elasticUsername = process.env.ELASTIC_USERNAME || "elastic";
 const elasticPassword = process.env.ELASTIC_PASSWORD as string;
+const elasticCertPath = process.env.ELASTIC_CERT_PATH as string;
 const esclient = new Client({
     node: elasticUrl,
     auth: {
@@ -13,7 +14,7 @@ const esclient = new Client({
         password: elasticPassword
     },
     tls: {
-        // ca: fs.readFileSync('./ca/ca.crt'),
+        ca: fs.readFileSync(elasticCertPath),
         rejectUnauthorized: false
     }
 });
@@ -50,7 +51,6 @@ async function setQuotesMapping() {
 function checkConnection() {
     return new Promise(async (resolve) => {
         console.log("Checking connection to ElasticSearch...");
-
         let isConnected = false;
         while (!isConnected) {
             try {
@@ -59,6 +59,7 @@ function checkConnection() {
                 isConnected = true;
             } catch (_) { }
         }
+        resolve(true);
     });
 }
 

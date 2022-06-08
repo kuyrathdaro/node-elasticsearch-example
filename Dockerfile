@@ -1,17 +1,24 @@
-FROM node:lts-alpine
+FROM node:lts-alpine as builder
 
-WORKDIR /usr/src/app
+WORKDIR /usr/app
 
 COPY package*.json .
 COPY tsconfig.json .
 COPY src ./src
 
 RUN npm install
-RUN npm install -g pm2
 RUN npm run build
 
-EXPOSE 3000
-EXPOSE 9200
+FROM node:lts-alpine as production
 
-CMD ["npm", "run", "start"]
-# CMD ["pm2-runtime", "./dist/main.js"]
+WORKDIR /usr/app
+
+COPY package*.json .
+RUN npm install --only=production --omit=dev
+RUN npm install --location=global pm2
+
+COPY --from=builder /usr/app/dist .
+
+EXPOSE 3000
+
+CMD ["pm2-runtime", "main.js"]

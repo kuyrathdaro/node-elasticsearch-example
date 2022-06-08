@@ -52,6 +52,8 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
       - certs:/usr/share/elasticsearch/config/certs
+    env_file:
+      - .env
     ports:
       - ${ES_PORT}:9200
       - ${ES_PORT_2}:9300
@@ -95,13 +97,16 @@ services:
       context: .
     ports:
       - 3000:3000
+    env_file:
+      - .env
     environment:
       - NODE_ENV=local
       - ES_HOST=elasticsearch
       - NODE_PORT=3000
-      - ELASTIC_URL=https://elasticsearch:9200
+      - ELASTIC_URL=${ELASTIC_URL}
       - ELASTIC_USERNAME=${ELASTIC_USERNAME}
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ELASTIC_CERT_PATH=${ELASTIC_CERT_PATH}
     volumes:
       - .:/usr/src/app
       - certs:/usr/share/elasticsearch/config/certs
@@ -118,9 +123,11 @@ services:
     volumes:
       - certs:/usr/share/kibana/config/certs
       - kibanadata:/usr/share/kibana/data
+    env_file:
+      - .env
     environment:
       - SERVERNAME=kibana
-      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=${ELASTIC_URL}
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
