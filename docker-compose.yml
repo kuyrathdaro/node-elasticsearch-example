@@ -108,7 +108,6 @@ services:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTIC_CERT_PATH=${ELASTIC_CERT_PATH}
     volumes:
-      - .:/usr/app
       - certs:/usr/share/elasticsearch/config/certs
     links:
       - elasticsearch

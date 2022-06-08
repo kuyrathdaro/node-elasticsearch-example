@@ -14,7 +14,7 @@ FROM node:lts-alpine as production
 WORKDIR /usr/app
 
 COPY package*.json .
-RUN npm install --only=production --omit=dev
+RUN npm ci install --only=production
 RUN npm install --location=global pm2
 
 COPY --from=builder /usr/app/dist .
